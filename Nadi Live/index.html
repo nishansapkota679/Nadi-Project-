@@ -1,0 +1,480 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Nadi Investment</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+<!-- ===== STYLES (colours, layout) ===== -->
+<style>
+/* Dark mode colours are on .th, light mode colours on .th.light */
+body{margin:0}
+.th{--bg:#0D0F10;--sf:#15181B;--sf2:#1C2024;--bd:#262B30;--tx:#F1F4F2;--mt:#A1AAA4;--ac:#34C267;--acs:rgba(52,194,103,.14);--act:#08140C;--up:#3DD68C;--dn:#FF6B6B;--c1:#34C267;--c2:#9BE7B4;--c3:#1E6B3C;--c4:#56606A;--hd:rgba(13,15,16,.92)}
+.th.light{--bg:#F3F7F4;--sf:#FFFFFF;--sf2:#EDF5EF;--bd:#DFE7E1;--tx:#0F1712;--mt:#56625B;--ac:#178A3E;--acs:#E3F3E8;--act:#FFFFFF;--up:#13804A;--dn:#C62828;--c1:#178A3E;--c2:#7CCB95;--c3:#0E4F25;--c4:#B8C2BC;--hd:rgba(255,255,255,.94)}
+.th a{color:var(--tx)}.th a:hover{color:var(--ac)}
+.card{background:var(--sf);border:1px solid var(--bd);border-radius:16px}
+.mt{color:var(--mt)}
+.pill{font:inherit;font-size:13px;font-weight:600;padding:8px 12px;min-height:36px;border:none;border-radius:8px;background:transparent;color:var(--mt);cursor:pointer}
+.pill.on{background:var(--ac);color:var(--act)}
+.nl{color:var(--mt);text-decoration:none;font-size:15px;font-weight:500}
+.tk{display:flex;align-items:center;gap:8px;padding:0 18px;border-right:1px solid var(--bd);white-space:nowrap;font-size:13px}
+.ic-moon{display:none}.th.light .ic-moon{display:block}.th.light .ic-sun{display:none}
+html{scroll-behavior:smooth}
+/* ----- Phone menu ----- */
+.show-sm{display:none}
+.menubtn{display:none;width:44px;height:44px;border-radius:12px;border:1px solid var(--bd);background:var(--sf);color:var(--tx);cursor:pointer;align-items:center;justify-content:center}
+@media (max-width: 900px){
+  .menubtn{display:flex}
+  .hide-sm{display:none}
+  .mainnav a.show-sm{display:block}
+  .mainnav{display:none !important;order:3;width:100%;flex-direction:column;align-items:flex-start !important;gap:4px !important;padding-top:8px;border-top:1px solid var(--bd)}
+  .mainnav.open{display:flex !important}
+  .mainnav a{display:block;width:100%;padding:12px 4px;font-size:16px}
+}
+</style>
+</head>
+<body>
+<div id="page" class="th" style="font-family: 'Plus Jakarta Sans', system-ui, sans-serif; color: var(--tx); background: var(--bg); min-height: 100vh">
+
+
+<!-- ===== TICKER STRIP (filled in from the pool's records) ===== -->
+<div style="background: var(--sf); border-bottom: 1px solid var(--bd); overflow-x: auto">
+<div style="display: flex; align-items: center; height: 40px; max-width: 1240px; margin: 0 auto">
+<div class="tk"><span style="width: 8px; height: 8px; border-radius: 99px; background: var(--ac)"></span><strong>Updated</strong><span class="mt" id="tkDate">–</span></div>
+<div class="tk"><strong>NEPSE</strong><span id="tkNepse">–</span><span id="tkNepseChg" style="font-weight: 600"></span></div>
+<div class="tk" style="border-right: none"><strong>Nadi NAV</strong><span id="tkNav">–</span><span id="tkNavChg" style="font-weight: 600"></span></div>
+</div>
+</div>
+
+<!-- ===== HEADER (logo, menu, dark/light button, Log in, Join) ===== -->
+<header style="position: sticky; top: 0; z-index: 5; background: var(--hd); border-bottom: 1px solid var(--bd); backdrop-filter: blur(8px)">
+<div style="max-width: 1240px; margin: 0 auto; padding: 14px 24px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px">
+<a href="#top" style="display: flex; align-items: center; gap: 10px; text-decoration: none">
+<svg width="36" height="36" viewBox="0 0 36 36" aria-hidden="true"><rect width="36" height="36" rx="10" style="fill: var(--ac)"></rect><path d="M7 23c4-5 7 3 11-2s7 3 11-2" fill="none" stroke-width="2.6" stroke-linecap="round" style="stroke: var(--act)"></path><path d="M7 15c4-5 7 3 11-2s7 3 11-2" fill="none" stroke-width="2.6" stroke-linecap="round" opacity="0.55" style="stroke: var(--act)"></path></svg>
+<span style="display: flex; flex-direction: column; line-height: 1.1"><span style="font-weight: 800; font-size: 19px">Nadi <span style="color: var(--ac)">Investment</span></span><span class="mt" style="font-size: 11px">Invest together, see every rupee</span></span>
+</a>
+<nav id="mainNav" class="mainnav" aria-label="Main" style="display: flex; flex-wrap: wrap; align-items: center; gap: 22px">
+<a class="nl" href="#top" aria-current="page" style="color: var(--ac); font-weight: 700">Dashboard</a>
+<a class="nl" href="#results">Our results</a>
+<a class="nl" href="#how">How it works</a>
+<a class="nl" href="#process">Our process</a>
+<a class="nl" href="#fees">Fees</a>
+<a class="nl" href="#faq">FAQ</a>
+<a class="nl show-sm" href="login.html">Log in</a>
+</nav>
+<div style="display: flex; align-items: center; gap: 10px">
+<!-- Phone menu button: only shows on small screens -->
+<button type="button" id="menuBtn" class="menubtn" aria-label="Open menu" aria-expanded="false" aria-controls="mainNav"><svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path></svg></button>
+<button type="button" id="themeBtn" aria-label="Switch to light mode" style="width: 44px; height: 44px; border-radius: 12px; border: 1px solid var(--bd); background: var(--sf); color: var(--tx); cursor: pointer; display: flex; align-items: center; justify-content: center">
+<svg class="ic-sun" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.5" fill="none" stroke="currentColor" stroke-width="2"></circle><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path></svg><svg class="ic-moon" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"></path></svg>
+
+</button>
+<a href="login.html" class="hide-sm" style="text-decoration: none; padding: 11px 16px; border: 1px solid var(--bd); border-radius: 10px; font-weight: 600; font-size: 14px">Log in</a>
+<a href="join.html" style="text-decoration: none; padding: 12px 18px; border-radius: 10px; background: var(--ac); color: var(--act); font-weight: 700; font-size: 14px">Join Nadi</a>
+</div>
+</div>
+</header>
+
+
+<!-- ===== DASHBOARD (whole-pool charts — first thing visitors see) ===== -->
+<main id="top" style="max-width: 1240px; margin: 0 auto; padding: 32px 24px 0">
+<div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 20px; margin-bottom: 22px">
+<div>
+<p style="margin: 0 0 8px; font-size: 13px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--ac)">Dashboard · whole pool</p>
+<h1 style="margin: 0; font-size: 36px; font-weight: 800; letter-spacing: -0.5px">How the Nadi pool is doing</h1>
+</div>
+<aside aria-label="Our promise" style="max-width: 360px; border-left: 3px solid var(--ac); padding: 2px 0 2px 14px">
+<p class="mt" style="margin: 0 0 4px; font-size: 11px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase">Our promise</p>
+<p style="margin: 0; font-size: 14px; line-height: 1.5; font-style: italic">Invest in NEPSE with people who do the research — and see every rupee.</p>
+</aside>
+</div>
+
+
+<!-- ===== Big growth chart: Nadi pool vs NEPSE (live) ===== -->
+<section class="card" aria-label="Pool growth" style="padding: 24px; margin-bottom: 20px">
+<div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 16px; margin-bottom: 18px">
+<div style="display: flex; align-items: center; gap: 12px">
+<h2 style="margin: 0; font-size: 26px; font-weight: 800">Nadi Pool</h2>
+<span style="font-size: 13px; font-weight: 600; padding: 5px 10px; border-radius: 99px; background: var(--acs); color: var(--ac)">vs NEPSE</span>
+</div>
+<div role="group" aria-label="Time range" style="display: flex; flex-wrap: wrap; gap: 4px" id="rangeBtns">
+<button type="button" class="pill" data-range="3">3M</button><button type="button" class="pill" data-range="6">6M</button><button type="button" class="pill" data-range="12">1Y</button><button type="button" class="pill on" data-range="0" aria-pressed="true">ALL</button>
+</div>
+</div>
+<div style="display: flex; flex-wrap: wrap; gap: 36px; margin-bottom: 8px">
+<div><p class="mt" style="margin: 0; font-size: 13px">Rs 100 in the Nadi pool is now</p><p id="g100" style="margin: 4px 0 2px; font-size: 34px; font-weight: 800">–</p><p id="gPct" style="margin: 0; font-size: 14px; font-weight: 700"></p></div>
+<div><p class="mt" style="margin: 0; font-size: 13px">Same Rs 100 in NEPSE</p><p id="n100" class="mt" style="margin: 4px 0 2px; font-size: 34px; font-weight: 800">–</p><p id="nPct" class="mt" style="margin: 0; font-size: 14px; font-weight: 600"></p></div>
+</div>
+<div style="position: relative; height: 300px"><canvas id="growthChart" role="img" aria-label="Growth of Rs 100 in the Nadi pool compared with NEPSE"></canvas></div>
+<p id="emptyNote" class="mt" style="display: none; margin: 12px 0 0">Our track record starts soon. Results appear here after the first NAV is published.</p>
+</section>
+
+<!-- ===== Four result cards (live) ===== -->
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin-bottom: 20px">
+<div class="card" style="padding: 20px"><p class="mt" style="margin: 0; font-size: 14px; font-weight: 600">All-time return</p><p id="kRet" style="margin: 18px 0 6px; font-size: 32px; font-weight: 800">–</p><p id="kRetSub" class="mt" style="margin: 0; font-size: 13px; font-weight: 600"></p></div>
+<div class="card" style="padding: 20px"><p class="mt" style="margin: 0; font-size: 14px; font-weight: 600">Compared with NEPSE</p><p id="kVs" style="margin: 18px 0 6px; font-size: 32px; font-weight: 800">–</p><p id="kVsSub" class="mt" style="margin: 0; font-size: 13px; font-weight: 600"></p></div>
+<div class="card" style="padding: 20px"><p class="mt" style="margin: 0; font-size: 14px; font-weight: 600">Best performer</p><p id="kBest" style="margin: 18px 0 6px; font-size: 32px; font-weight: 800">–</p><p id="kBestSub" class="mt" style="margin: 0; font-size: 13px; font-weight: 600"></p></div>
+<div class="card" style="padding: 20px"><p class="mt" style="margin: 0; font-size: 14px; font-weight: 600">Worst performer</p><p id="kWorst" style="margin: 18px 0 6px; font-size: 32px; font-weight: 800">–</p><p id="kWorstSub" class="mt" style="margin: 0; font-size: 13px; font-weight: 600"></p></div>
+</div>
+
+<!-- ===== Sector donut + monthly returns (live) ===== -->
+<div style="display: flex; flex-wrap: wrap; gap: 20px">
+<section class="card" style="flex: 1 1 340px; min-width: 0; padding: 24px">
+<h2 style="margin: 0 0 18px; font-size: 18px; font-weight: 700">Where the money is invested</h2>
+<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 24px">
+<div style="position: relative; width: 180px; height: 180px">
+<canvas id="sectorChart" role="img" aria-label="Share of the pool in each sector"></canvas>
+<div style="position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; pointer-events: none"><span class="mt" style="font-size: 12px; font-weight: 600">Pool value</span><strong id="donutCenter" style="font-size: 17px">–</strong></div>
+</div>
+<div id="sectorLegend" style="flex: 1 1 140px; display: flex; flex-direction: column; gap: 12px; font-size: 14px"><span class="mt">Holdings appear here once added.</span></div>
+</div>
+</section>
+
+<section class="card" style="flex: 2 1 520px; min-width: 0; padding: 24px">
+<div style="display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 18px"><h2 style="margin: 0; font-size: 18px; font-weight: 700">Return each month</h2><span class="mt" style="font-size: 13px">Losing months shown in red</span></div>
+<div style="overflow-x: auto"><div id="monthBars" style="min-width: 470px"><p class="mt" style="margin: 0">Monthly results appear after the first month.</p></div></div>
+</section>
+</div>
+<p class="mt" style="margin: 14px 0 0; font-size: 13px">Live figures from the pool's records · whole pool only, no personal details · past results do not promise future results.</p>
+</main>
+
+
+<!-- ===== OUR RESULTS ===== -->
+<section id="results" style="max-width: 1240px; margin: 0 auto; padding: 80px 24px 24px">
+<div style="text-align: center; margin-bottom: 36px">
+<p style="margin: 0 0 10px; font-size: 14px; font-weight: 700; color: var(--ac); display: flex; align-items: center; justify-content: center; gap: 12px"><span style="width: 60px; height: 1px; background: var(--ac)"></span>Our results<span style="width: 60px; height: 1px; background: var(--ac)"></span></p>
+<h2 style="margin: 0 auto 12px; font-size: 40px; font-weight: 800; line-height: 1.15; max-width: 860px; letter-spacing: -0.5px"><span id="resHeadline">Our track record, in the open.</span></h2>
+<p class="mt" style="margin: 0 auto; font-size: 17px; line-height: 1.6; max-width: 640px">Real results of the money we manage together, not a promise. We show the bad months too.</p>
+</div>
+
+<div class="card" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); background: var(--acs); border-color: transparent; margin-bottom: 20px; overflow: hidden">
+<div style="padding: 28px 20px; text-align: center; border-right: 1px solid var(--bd)"><span style="width: 64px; height: 64px; margin: 0 auto 14px; border-radius: 99px; border: 3px solid var(--ac); display: flex; align-items: center; justify-content: center"><svg width="28" height="28" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 17l6-6 4 4 8-8M15 7h6v6" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="stroke: var(--ac)"></path></svg></span><p style="margin: 0; font-size: 36px; font-weight: 800; color: var(--ac)" id="rPool">–</p><p style="margin: 4px 0 0; font-weight: 600">Money we manage</p></div>
+<div style="padding: 28px 20px; text-align: center; border-right: 1px solid var(--bd)"><span style="width: 64px; height: 64px; margin: 0 auto 14px; border-radius: 99px; border: 3px solid var(--ac); display: flex; align-items: center; justify-content: center"><svg width="28" height="28" viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3.5" fill="none" stroke-width="2" style="stroke: var(--ac)"></circle><path d="M2.5 20c1-3.5 3.5-5 6.5-5s5.5 1.5 6.5 5M16 4.5a3.5 3.5 0 0 1 0 7M18 15c2 .6 3.2 2.2 3.7 5" fill="none" stroke-width="2" stroke-linecap="round" style="stroke: var(--ac)"></path></svg></span><p style="margin: 0; font-size: 36px; font-weight: 800; color: var(--ac)" id="rMembers">–</p><p style="margin: 4px 0 0; font-weight: 600">Investors in the pool</p></div>
+<div style="padding: 28px 20px; text-align: center; border-right: 1px solid var(--bd)"><span style="width: 64px; height: 64px; margin: 0 auto 14px; border-radius: 99px; border: 3px solid var(--ac); display: flex; align-items: center; justify-content: center"><svg width="28" height="28" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0zM7 6H4v1a3 3 0 0 0 3 3M17 6h3v1a3 3 0 0 1-3 3" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="stroke: var(--ac)"></path></svg></span><p style="margin: 0; font-size: 36px; font-weight: 800; color: var(--ac)" id="rBeat">–</p><p style="margin: 4px 0 0; font-weight: 600">Months beating NEPSE</p></div>
+<div style="padding: 28px 20px; text-align: center"><span style="width: 64px; height: 64px; margin: 0 auto 14px; border-radius: 99px; border: 3px solid var(--ac); display: flex; align-items: center; justify-content: center"><svg width="28" height="28" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5" fill="none" stroke-width="2" style="stroke: var(--ac)"></circle><path d="M16 16l5 5" stroke-width="2" stroke-linecap="round" style="stroke: var(--ac)"></path></svg></span><p style="margin: 0; font-size: 36px; font-weight: 800; color: var(--ac)">34</p><p style="margin: 4px 0 0; font-weight: 600">Companies screened</p></div>
+</div>
+
+<div style="display: flex; flex-wrap: wrap; gap: 20px">
+<div class="card" style="flex: 1 1 380px; min-width: 0; padding: 26px">
+<h3 style="margin: 0 0 4px; font-size: 18px; font-weight: 700">Discipline record</h3>
+<p class="mt" style="margin: 0 0 18px; font-size: 14px">From our monthly reviews</p>
+<div style="display: flex; flex-direction: column; gap: 14px; font-size: 15px">
+<div style="display: flex; justify-content: space-between; gap: 12px; padding-bottom: 12px; border-bottom: 1px solid var(--bd)"><span class="mt">Months we followed all 7 rules</span><strong style="color: var(--ac)">6 of 6</strong></div>
+<div style="display: flex; justify-content: space-between; gap: 12px; padding-bottom: 12px; border-bottom: 1px solid var(--bd)"><span class="mt">Stocks bought without full analysis</span><strong style="color: var(--ac)">0</strong></div>
+<div style="display: flex; justify-content: space-between; gap: 12px"><span class="mt">Largest monthly fall</span><strong style="color: var(--dn)">−1.4%</strong></div>
+</div>
+</div>
+<div class="card" style="flex: 1 1 380px; min-width: 0; padding: 26px; display: flex; flex-direction: column; gap: 14px">
+<h3 style="margin: 0; font-size: 22px; font-weight: 800">Want your money in this pool?</h3>
+<p class="mt" style="margin: 0; font-size: 15px; line-height: 1.6">Join, verify your identity and add money. You get units at that day's price and can track your own share after login.</p>
+<div style="display: flex; flex-wrap: wrap; gap: 12px; margin-top: auto">
+<a href="join.html" style="text-decoration: none; padding: 14px 22px; border-radius: 12px; background: var(--ac); color: var(--act); font-weight: 700">Join with Rs [MINIMUM]</a>
+<a href="#how" style="text-decoration: none; padding: 14px 22px; border-radius: 12px; border: 1px solid var(--bd); font-weight: 600">How it works</a>
+</div>
+</div>
+</div>
+<p class="mt" style="margin: 18px 0 0; font-size: 13px; line-height: 1.6; max-width: 860px">Returns are for the whole pool after broker charges and our fees, before each investor's capital gains tax. Past results do not promise future results. On the live site these numbers come straight from the pool's daily records.</p>
+</section>
+
+
+<!-- ===== HOW IT WORKS ===== -->
+<section id="how" style="max-width: 1240px; margin: 0 auto; padding: 80px 24px 24px">
+<h2 style="margin: 0 0 10px; font-size: 34px; font-weight: 800">How it works</h2>
+<p class="mt" style="margin: 0 0 32px; font-size: 17px; max-width: 620px; line-height: 1.6">Four steps from joining to watching your money work. No need to message anyone to ask how your money is doing.</p>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 18px">
+<div class="card" style="padding: 24px"><p style="margin: 0 0 16px; width: 44px; height: 44px; border-radius: 12px; background: var(--acs); color: var(--ac); font-weight: 800; display: flex; align-items: center; justify-content: center">01</p><h3 style="margin: 0 0 8px; font-size: 18px">Join and verify</h3><p class="mt" style="margin: 0; line-height: 1.55; font-size: 15px">Create an account and upload citizenship, PAN and a photo. Approved within [X] days.</p></div>
+<div class="card" style="padding: 24px"><p style="margin: 0 0 16px; width: 44px; height: 44px; border-radius: 12px; background: var(--acs); color: var(--ac); font-weight: 800; display: flex; align-items: center; justify-content: center">02</p><h3 style="margin: 0 0 8px; font-size: 18px">Add money</h3><p class="mt" style="margin: 0; line-height: 1.55; font-size: 15px">Pay by bank, ConnectIPS, eSewa or Khalti and upload the receipt. You get units at that day's price.</p></div>
+<div class="card" style="padding: 24px"><p style="margin: 0 0 16px; width: 44px; height: 44px; border-radius: 12px; background: var(--acs); color: var(--ac); font-weight: 800; display: flex; align-items: center; justify-content: center">03</p><h3 style="margin: 0 0 8px; font-size: 18px">We research and invest</h3><p class="mt" style="margin: 0; line-height: 1.55; font-size: 15px">Every stock passes our five-step process before we buy. No buying on tips alone.</p></div>
+<div class="card" style="padding: 24px"><p style="margin: 0 0 16px; width: 44px; height: 44px; border-radius: 12px; background: var(--acs); color: var(--ac); font-weight: 800; display: flex; align-items: center; justify-content: center">04</p><h3 style="margin: 0 0 8px; font-size: 18px">Track it live</h3><p class="mt" style="margin: 0; line-height: 1.55; font-size: 15px">Your dashboard updates every trading day, with a statement at the end of each month.</p></div>
+</div>
+</section>
+
+
+<!-- ===== OUR 5-STEP PROCESS ===== -->
+<section id="process" style="max-width: 1240px; margin: 0 auto; padding: 56px 24px">
+<div class="card" style="padding: 44px 36px; background: var(--sf2)">
+<h2 style="margin: 0 0 10px; font-size: 34px; font-weight: 800">Our five-step research <span style="color: var(--ac)">process</span></h2>
+<p class="mt" style="margin: 0 0 30px; font-size: 17px; max-width: 660px; line-height: 1.6">The same discipline we use for our own money. A stock reaches the pool only after it passes every step.</p>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 14px">
+<div class="card" style="padding: 20px"><p style="margin: 0 0 6px; color: var(--ac); font-weight: 800; font-size: 14px">01 · Screen</p><p class="mt" style="margin: 0; font-size: 14px; line-height: 1.5">Profit in each of the last five years? Do we understand how it makes money? Not on our red list?</p></div>
+<div class="card" style="padding: 20px"><p style="margin: 0 0 6px; color: var(--ac); font-weight: 800; font-size: 14px">02 · Analyse</p><p class="mt" style="margin: 0; font-size: 14px; line-height: 1.5">Five years of EPS, book value, ROE and P/E, plus CAR and bad loans for banks.</p></div>
+<div class="card" style="padding: 20px"><p style="margin: 0 0 6px; color: var(--ac); font-weight: 800; font-size: 14px">03 · Watch</p><p class="mt" style="margin: 0; font-size: 14px; line-height: 1.5">A score out of 100, an intrinsic value and a buy-below price. We wait for the price.</p></div>
+<div class="card" style="padding: 20px"><p style="margin: 0 0 6px; color: var(--ac); font-weight: 800; font-size: 14px">04 · Invest</p><p class="mt" style="margin: 0; font-size: 14px; line-height: 1.5">Buy with a stop-loss and a position limit, so no single stock dominates.</p></div>
+<div class="card" style="padding: 20px"><p style="margin: 0 0 6px; color: var(--ac); font-weight: 800; font-size: 14px">05 · Review</p><p class="mt" style="margin: 0; font-size: 14px; line-height: 1.5">Every month: did we follow our rules? Best decision, biggest mistake, one lesson.</p></div>
+</div>
+</div>
+</section>
+
+
+<!-- ===== FEES AND RISK WARNING ===== -->
+<section id="fees" style="max-width: 1240px; margin: 0 auto; padding: 24px 24px 56px">
+<h2 style="margin: 0 0 28px; font-size: 34px; font-weight: 800">Fees and rules</h2>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 18px">
+<div class="card" style="padding: 22px"><p class="mt" style="margin: 0; font-size: 14px">Minimum to start</p><p style="margin: 6px 0 0; font-size: 26px; font-weight: 800">Rs [MINIMUM]</p></div>
+<div class="card" style="padding: 22px"><p class="mt" style="margin: 0; font-size: 14px">Management fee</p><p style="margin: 6px 0 0; font-size: 26px; font-weight: 800">[X]% a year</p></div>
+<div class="card" style="padding: 22px"><p class="mt" style="margin: 0; font-size: 14px">Share of profit</p><p style="margin: 6px 0 0; font-size: 26px; font-weight: 800">[X]% of gains</p></div>
+<div class="card" style="padding: 22px"><p class="mt" style="margin: 0; font-size: 14px">Withdrawal time</p><p style="margin: 6px 0 0; font-size: 26px; font-weight: 800">[X] working days</p></div>
+</div>
+<div class="card" style="margin-top: 20px; padding: 20px 24px; display: flex; gap: 14px; align-items: flex-start; border-color: var(--dn)">
+<svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" style="flex: none"><path d="M12 3l10 18H2L12 3z" fill="none" stroke-width="2" stroke-linejoin="round" style="stroke: var(--dn)"></path><path d="M12 10v5M12 18v.5" stroke-width="2" stroke-linecap="round" style="stroke: var(--dn)"></path></svg>
+<p style="margin: 0; font-size: 15px; line-height: 1.6"><strong>Risk warning.</strong> <span class="mt">Share prices go down as well as up, and you can lose part of the money you invest. Past returns do not promise future returns. Broker commission, SEBON fee, DP charges and capital gains tax apply as per NEPSE rules.</span></p>
+</div>
+</section>
+
+
+<!-- ===== FAQ (click a question to open it) ===== -->
+<section id="faq" style="max-width: 1240px; margin: 0 auto; padding: 24px 24px 80px">
+<h2 style="margin: 0 0 22px; font-size: 34px; font-weight: 800">Questions people ask</h2>
+<div style="display: flex; flex-direction: column; gap: 12px; max-width: 880px">
+<details class="card" style="padding: 18px 22px"><summary style="font-weight: 700; font-size: 16px; cursor: pointer">Who holds the shares?</summary><p class="mt" style="margin: 12px 0 0; line-height: 1.6">[Explain the account structure — e.g. the company's demat account, and how members' ownership is recorded.]</p></details>
+<details class="card" style="padding: 18px 22px"><summary style="font-weight: 700; font-size: 16px; cursor: pointer">Can I take my money out any time?</summary><p class="mt" style="margin: 12px 0 0; line-height: 1.6">Yes. Request a withdrawal from your dashboard. Your units are sold back at the next price and the money reaches your bank in [X] working days.</p></details>
+<details class="card" style="padding: 18px 22px"><summary style="font-weight: 700; font-size: 16px; cursor: pointer">Is Nadi registered?</summary><p class="mt" style="margin: 12px 0 0; line-height: 1.6">[Registration status with OCR and SEBON goes here.]</p></details>
+<details class="card" style="padding: 18px 22px"><summary style="font-weight: 700; font-size: 16px; cursor: pointer">What happens to dividends?</summary><p class="mt" style="margin: 12px 0 0; line-height: 1.6">Cash dividends and bonus shares go into the pool, which raises the price per unit for every member.</p></details>
+</div>
+</section>
+
+
+<!-- ===== FOOTER ===== -->
+<footer style="background: var(--sf); border-top: 1px solid var(--bd)">
+<div style="max-width: 1240px; margin: 0 auto; padding: 36px 24px; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 24px; font-size: 14px">
+<div><p style="margin: 0 0 6px; font-weight: 800; font-size: 16px">Nadi Investment Company Pvt. Ltd.</p><p class="mt" style="margin: 0">Lalitpur, Nepal · [PHONE] · [EMAIL]</p></div>
+<div style="display: flex; flex-wrap: wrap; gap: 20px"><a class="nl" href="#faq">Terms</a><a class="nl" href="#faq">Privacy</a><a class="nl" href="#fees">Risk disclosure</a><a class="nl" href="#faq">Contact</a></div>
+</div>
+</footer>
+</div>
+
+<!-- ===== JAVASCRIPT: dark / light button ===== -->
+<script>
+  const page = document.getElementById("page");
+  const themeBtn = document.getElementById("themeBtn");
+
+  // Remember the visitor's choice (dark or light) for next time
+  function applyTheme(mode) {
+    page.classList.toggle("light", mode === "light");
+    themeBtn.setAttribute("aria-label", mode === "light" ? "Switch to dark mode" : "Switch to light mode");
+    if (window.refreshCharts) window.refreshCharts();
+  }
+  try { applyTheme(localStorage.getItem("nadiTheme") || "dark"); } catch (e) { applyTheme("dark"); }
+
+  themeBtn.addEventListener("click", function () {
+    const mode = page.classList.contains("light") ? "dark" : "light";
+    applyTheme(mode);
+    try { localStorage.setItem("nadiTheme", mode); } catch (e) {}
+  });
+</script>
+
+<!-- ===== JAVASCRIPT: phone menu (☰) ===== -->
+<script>
+  const menuBtn = document.getElementById("menuBtn");
+  const mainNav = document.getElementById("mainNav");
+
+  menuBtn.addEventListener("click", function () {
+    const isOpen = mainNav.classList.toggle("open");
+    menuBtn.setAttribute("aria-expanded", isOpen);
+    menuBtn.setAttribute("aria-label", isOpen ? "Close menu" : "Open menu");
+  });
+
+  // Close the menu after tapping a link
+  mainNav.querySelectorAll("a").forEach(function (link) {
+    link.addEventListener("click", function () {
+      mainNav.classList.remove("open");
+      menuBtn.setAttribute("aria-expanded", "false");
+    });
+  });
+</script>
+<!-- ===== JAVASCRIPT: live numbers from Supabase (totals only) ===== -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1"></script>
+<script src="config.js"></script>
+<script>
+  let navs = [], summary = null, growthChart = null, sectorChart = null, range = 0;
+  const $ = function (id) { return document.getElementById(id); };
+  const css = function (v) { return getComputedStyle(page).getPropertyValue(v).trim(); };
+  function pct(x) { return (x >= 0 ? "▲ " : "▼ ") + Math.abs(x * 100).toFixed(1) + "%"; }
+  function signed(x) { return (x >= 0 ? "+" : "−") + Math.abs(x * 100).toFixed(1) + "%"; }
+  function colorize(el, x) { el.style.color = x >= 0 ? "var(--up)" : "var(--dn)"; }
+  function lakh(n) { return n >= 100000 ? "Rs " + (n / 100000).toFixed(2) + "L" : rs(n); }
+
+  // Month-end values: { "2026-10": { nav, nepse } }
+  function monthEnds() {
+    const m = {};
+    navs.forEach(function (n) { m[n.nav_date.slice(0, 7)] = n; });
+    return Object.keys(m).sort().map(function (k) { return { key: k, row: m[k] }; });
+  }
+
+  async function loadPublic() {
+    const n = await db.from("nav_history").select("nav_date, nav, nepse").order("nav_date", { ascending: true });
+    const s = await db.rpc("pool_summary");
+    if (n.error) throw n.error;
+    navs = n.data || [];
+    summary = s.error ? null : s.data;
+    render();
+  }
+
+  function render() {
+    if (!navs.length) { $("emptyNote").style.display = "block"; return; }
+    const first = navs[0], latest = navs[navs.length - 1], prev = navs[navs.length - 2];
+    const ret = latest.nav / first.nav - 1;
+    const nepseRows = navs.filter(function (x) { return x.nepse != null; });
+    const hasNepse = nepseRows.length >= 2;
+    const nRet = hasNepse ? nepseRows[nepseRows.length - 1].nepse / nepseRows[0].nepse - 1 : null;
+
+    // Ticker
+    $("tkDate").textContent = latest.nav_date;
+    $("tkNav").textContent = "Rs " + num(latest.nav, 2);
+    if (prev) { const c = latest.nav / prev.nav - 1; $("tkNavChg").textContent = pct(c); colorize($("tkNavChg"), c); }
+    if (latest.nepse != null) {
+      $("tkNepse").textContent = num(latest.nepse, 2);
+      const pn = navs.slice(0, -1).reverse().find(function (x) { return x.nepse != null; });
+      if (pn) { const c = latest.nepse / pn.nepse - 1; $("tkNepseChg").textContent = pct(c); colorize($("tkNepseChg"), c); }
+    }
+
+    // Cards
+    $("kRet").textContent = signed(ret); colorize($("kRet"), ret);
+    $("kRetSub").textContent = "Since " + first.nav_date + " (NAV " + num(first.nav, 2) + " → " + num(latest.nav, 2) + ")";
+    if (hasNepse) {
+      const d = ret - nRet;
+      $("kVs").textContent = (d >= 0 ? "+" : "−") + Math.abs(d * 100).toFixed(1) + " pts";
+      $("kVsSub").textContent = "NEPSE " + signed(nRet) + " in the same time";
+    } else { $("kVsSub").textContent = "NEPSE comparison coming soon"; }
+    if (summary && summary.best) {
+      $("kBest").textContent = summary.best.symbol; $("kBestSub").textContent = pct(summary.best.pct / 100) + " since bought"; colorize($("kBestSub"), summary.best.pct);
+      $("kWorst").textContent = summary.worst.symbol; $("kWorstSub").textContent = pct(summary.worst.pct / 100) + " since bought"; colorize($("kWorstSub"), summary.worst.pct);
+    } else { $("kBestSub").textContent = "Holdings coming soon"; $("kWorstSub").textContent = "Holdings coming soon"; }
+
+    // Results section
+    const poolValue = summary ? summary.total_units * latest.nav : 0;
+    $("resHeadline").textContent = "Our pool is " + (ret >= 0 ? "up " : "down ") + Math.abs(ret * 100).toFixed(1) + "% since we started." +
+      (hasNepse ? " NEPSE is " + (nRet >= 0 ? "up " : "down ") + Math.abs(nRet * 100).toFixed(1) + "%." : "");
+    $("rPool").textContent = summary ? lakh(poolValue) : "–";
+    $("rMembers").textContent = summary ? summary.members : "–";
+    $("donutCenter").textContent = summary ? lakh(poolValue) : "–";
+
+    // Monthly returns (last 6 months)
+    const ends = monthEnds(), months = [];
+    let base = first;
+    ends.forEach(function (e) {
+      const r = e.row.nav / base.nav - 1;
+      const nr = (e.row.nepse != null && base.nepse != null) ? e.row.nepse / base.nepse - 1 : null;
+      months.push({ key: e.key, r: r, beat: nr == null ? null : r > nr });
+      base = e.row;
+    });
+    const withNepse = months.filter(function (m) { return m.beat !== null; });
+    $("rBeat").textContent = withNepse.length ? withNepse.filter(function (m) { return m.beat; }).length + " of " + withNepse.length : "–";
+    drawMonths(months.slice(-6));
+
+    drawGrowth();
+    drawSectors(poolValue);
+  }
+
+  function drawMonths(list) {
+    const box = $("monthBars");
+    if (!list.length) return;
+    box.innerHTML = "";
+    const max = Math.max.apply(null, list.map(function (m) { return Math.abs(m.r); })) || 0.01;
+    const bars = document.createElement("div"), labels = document.createElement("div");
+    const grid = "display: grid; grid-template-columns: repeat(" + list.length + ", minmax(60px, 1fr)); gap: 14px;";
+    bars.setAttribute("style", grid + " align-items: end; height: 180px");
+    labels.setAttribute("style", grid + " border-top: 1px solid var(--bd); padding-top: 8px; font-size: 12px; font-weight: 600; text-align: center");
+    labels.className = "mt";
+    list.forEach(function (m) {
+      const col = document.createElement("div");
+      col.setAttribute("style", "display: flex; flex-direction: column; align-items: center; justify-content: flex-end; gap: 6px; height: 100%");
+      const v = document.createElement("span");
+      v.textContent = signed(m.r);
+      v.setAttribute("style", "font-size: 13px; font-weight: 700; color: " + (m.r >= 0 ? "var(--up)" : "var(--dn)"));
+      const bar = document.createElement("div");
+      bar.setAttribute("style", "width: 100%; border-radius: 8px 8px 0 0; height: " + Math.max(4, Math.abs(m.r) / max * 120) + "px; background: " + (m.r >= 0 ? "var(--ac)" : "var(--dn)"));
+      col.appendChild(v); col.appendChild(bar); bars.appendChild(col);
+      const l = document.createElement("span");
+      l.textContent = new Date(m.key + "-01").toLocaleString("en", { month: "short", year: "2-digit" });
+      labels.appendChild(l);
+    });
+    box.appendChild(bars); box.appendChild(labels);
+  }
+
+  function drawGrowth() {
+    let rows = navs;
+    if (range > 0) {
+      const cut = new Date(navs[navs.length - 1].nav_date); cut.setMonth(cut.getMonth() - range);
+      const c = cut.toISOString().slice(0, 10);
+      rows = navs.filter(function (n) { return n.nav_date >= c; });
+      if (rows.length < 2) rows = navs.slice(-2);
+    }
+    const start = rows[0], nStart = rows.find(function (r) { return r.nepse != null; });
+    const pool = rows.map(function (r) { return +(r.nav / start.nav * 100).toFixed(2); });
+    const nep = rows.map(function (r) { return (nStart && r.nepse != null) ? +(r.nepse / nStart.nepse * 100).toFixed(2) : null; });
+    const last = pool[pool.length - 1], nLast = nep.filter(function (x) { return x != null; }).pop();
+    $("g100").textContent = "Rs " + num(last, 2);
+    $("gPct").textContent = pct(last / 100 - 1) + " since " + start.nav_date; colorize($("gPct"), last - 100);
+    $("n100").textContent = nLast != null ? "Rs " + num(nLast, 2) : "–";
+    $("nPct").textContent = nLast != null ? pct(nLast / 100 - 1) : "No NEPSE data yet";
+
+    const data = { labels: rows.map(function (r) { return r.nav_date; }), datasets: [
+      { label: "Nadi pool", data: pool, fill: true, tension: 0.3, borderWidth: 3, pointRadius: rows.length > 40 ? 0 : 3 },
+      { label: "NEPSE", data: nep, borderDash: [7, 6], borderWidth: 2, pointRadius: 0, spanGaps: true }
+    ] };
+    if (growthChart) { growthChart.data = data; } else {
+      growthChart = new Chart($("growthChart"), { type: "line", data: data, options: {
+        responsive: true, maintainAspectRatio: false, interaction: { mode: "index", intersect: false },
+        plugins: { legend: { labels: {} }, tooltip: { callbacks: { label: function (c) { return c.dataset.label + ": Rs " + num(c.parsed.y, 2); } } } },
+        scales: { x: { ticks: { maxTicksLimit: 8 }, grid: {} }, y: { ticks: { callback: function (v) { return "Rs " + v; } }, grid: {} } } } });
+    }
+    styleCharts();
+  }
+
+  function drawSectors(poolValue) {
+    if (!summary || !summary.sectors || !summary.sectors.length) return;
+    const list = summary.sectors.map(function (s) { return { name: s.sector, value: Number(s.value) }; });
+    const cash = poolValue - Number(summary.holdings_value);
+    if (cash > 0) list.push({ name: "Cash", value: cash });
+    const total = list.reduce(function (a, b) { return a + b.value; }, 0);
+    const colors = ["--c1", "--c2", "--c3", "--c4"].map(css);
+    const legend = $("sectorLegend"); legend.innerHTML = "";
+    list.forEach(function (s, i) {
+      s.color = s.name === "Cash" ? css("--mt") : colors[i % colors.length];
+      const row = document.createElement("div");
+      row.setAttribute("style", "display: flex; justify-content: space-between; gap: 10px");
+      const name = document.createElement("span"); name.setAttribute("style", "display: flex; align-items: center; gap: 8px");
+      const dot = document.createElement("span"); dot.setAttribute("style", "width: 10px; height: 10px; border-radius: 3px; background: " + s.color);
+      name.appendChild(dot); name.appendChild(document.createTextNode(s.name));
+      const val = document.createElement("strong"); val.textContent = (s.value / total * 100).toFixed(0) + "%";
+      row.appendChild(name); row.appendChild(val); legend.appendChild(row);
+    });
+    const data = { labels: list.map(function (s) { return s.name; }), datasets: [{ data: list.map(function (s) { return Math.round(s.value); }), backgroundColor: list.map(function (s) { return s.color; }), borderWidth: 0 }] };
+    if (sectorChart) { sectorChart.data = data; sectorChart.update(); }
+    else sectorChart = new Chart($("sectorChart"), { type: "doughnut", data: data, options: { cutout: "68%", plugins: { legend: { display: false }, tooltip: { callbacks: { label: function (c) { return c.label + ": " + rs(c.parsed); } } } } } });
+    window.__sectorList = list;
+  }
+
+  function styleCharts() {
+    if (!growthChart) return;
+    const green = css("--ac"), muted = css("--mt"), grid = css("--bd"), light = page.classList.contains("light");
+    const g = growthChart.data.datasets;
+    g[0].borderColor = green; g[0].pointBackgroundColor = green; g[0].backgroundColor = light ? "rgba(23,138,62,0.12)" : "rgba(52,194,103,0.15)";
+    g[1].borderColor = muted; g[1].backgroundColor = muted;
+    const o = growthChart.options;
+    o.plugins.legend.labels.color = muted; o.scales.x.ticks.color = muted; o.scales.y.ticks.color = muted;
+    o.scales.x.grid.color = grid; o.scales.y.grid.color = grid;
+    growthChart.update();
+  }
+
+  // Recolour on dark/light switch
+  window.refreshCharts = function () {
+    styleCharts();
+    if (sectorChart && navs.length && summary) drawSectors(summary.total_units * navs[navs.length - 1].nav);
+  };
+
+  // Range buttons
+  $("rangeBtns").addEventListener("click", function (e) {
+    const b = e.target.closest("button"); if (!b || !navs.length) return;
+    range = Number(b.dataset.range);
+    this.querySelectorAll("button").forEach(function (x) { x.classList.toggle("on", x === b); x.setAttribute("aria-pressed", x === b); });
+    drawGrowth();
+  });
+
+  loadPublic().catch(function () { $("emptyNote").textContent = "Live results couldn't load right now. Please refresh in a minute."; $("emptyNote").style.display = "block"; });
+</script>
+
+</body>
+</html>

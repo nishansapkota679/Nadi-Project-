@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My dashboard · Nadi Investment</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- ===== STYLES (same dark / light colours as the homepage) ===== -->
+  <style>
+    body { margin: 0; }
+    .th { --bg:#0D0F10; --sf:#15181B; --sf2:#1C2024; --bd:#262B30; --tx:#F1F4F2; --mt:#A1AAA4;
+          --ac:#34C267; --acs:rgba(52,194,103,.14); --act:#08140C; --up:#3DD68C; --dn:#FF6B6B; }
+    .th.light { --bg:#F3F7F4; --sf:#FFFFFF; --sf2:#EDF5EF; --bd:#DFE7E1; --tx:#0F1712; --mt:#56625B;
+          --ac:#178A3E; --acs:#E3F3E8; --act:#FFFFFF; --up:#13804A; --dn:#C62828; }
+    .th { font-family:'Plus Jakarta Sans', system-ui, sans-serif; background:var(--bg); color:var(--tx); min-height:100vh; }
+    .th a { color:var(--ac); }
+    .th a.btn { color:var(--tx); }
+    .wrap { max-width:1200px; margin:0 auto; padding:0 20px; }
+    .muted { color:var(--mt); }
+    .card { background:var(--sf); border:1px solid var(--bd); border-radius:16px; padding:22px; }
+    .kpis { display:grid; grid-template-columns:repeat(auto-fit, minmax(210px, 1fr)); gap:16px; margin-bottom:20px; }
+    .kpi-label { margin:0; font-size:14px; font-weight:600; color:var(--mt); }
+    .kpi-value { margin:14px 0 6px; font-size:30px; font-weight:800; }
+    .kpi-sub { margin:0; font-size:13px; font-weight:600; }
+    .up { color:var(--up); } .dn { color:var(--dn); }
+    .btn { display:inline-flex; align-items:center; box-sizing:border-box; font:inherit; font-weight:700; font-size:14px; padding:11px 16px; min-height:44px; border-radius:12px; cursor:pointer;
+           border:1px solid var(--bd); background:var(--sf); color:var(--tx); }
+    .ib { width:44px; height:44px; padding:0; display:flex; align-items:center; justify-content:center; }
+    .ic-moon{display:none} .th.light .ic-moon{display:block} .th.light .ic-sun{display:none}
+    table { width:100%; border-collapse:collapse; min-width:560px; }
+    th { padding:10px; font-size:12px; color:var(--mt); font-weight:700; text-align:left; text-transform:uppercase; letter-spacing:.5px; }
+    td { padding:13px 10px; border-top:1px solid var(--bd); font-size:14px; white-space:nowrap; }
+    .tag { padding:4px 10px; border-radius:99px; font-weight:700; font-size:12px; }
+    .tag.dep { background:var(--acs); color:var(--up); }
+    .tag.wd  { border:1px solid var(--dn); color:var(--dn); }
+    #loading { padding:80px 20px; text-align:center; }
+    #errorBox { display:none; margin:20px 0; padding:16px; border-radius:12px; border:1px solid var(--dn); color:var(--dn); }
+  </style>
+</head>
+<body>
+<div id="page" class="th">
+
+  <!-- ===== TOP BAR ===== -->
+  <header style="background:var(--sf); border-bottom:1px solid var(--bd)">
+    <div class="wrap" style="display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:12px; padding-top:14px; padding-bottom:14px">
+      <a href="index.html" style="display:flex; align-items:center; gap:10px; text-decoration:none; color:var(--tx)">
+        <svg width="36" height="36" viewBox="0 0 36 36" aria-hidden="true"><rect width="36" height="36" rx="10" style="fill:var(--ac)"></rect><path d="M7 23c4-5 7 3 11-2s7 3 11-2" fill="none" stroke-width="2.6" stroke-linecap="round" style="stroke:var(--act)"></path><path d="M7 15c4-5 7 3 11-2s7 3 11-2" fill="none" stroke-width="2.6" stroke-linecap="round" opacity="0.55" style="stroke:var(--act)"></path></svg>
+        <span style="font-weight:800; font-size:19px">Nadi <span style="color:var(--ac)">Investment</span></span>
+      </a>
+      <div style="display:flex; flex-wrap:wrap; gap:10px; align-items:center">
+        <a href="admin.html" id="adminLink" class="btn" style="display:none; text-decoration:none">Admin panel</a>
+        <a href="holdings.html" class="btn" style="text-decoration:none">Pool holdings</a>
+        <a href="password.html" class="btn" style="text-decoration:none">Change password</a>
+        <button type="button" id="themeBtn" class="btn ib" aria-label="Switch to light mode">
+          <svg class="ic-sun" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.5" fill="none" stroke="currentColor" stroke-width="2"></circle><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path></svg>
+          <svg class="ic-moon" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"></path></svg>
+        </button>
+        <button type="button" id="logoutBtn" class="btn">Log out</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap" style="padding-top:28px; padding-bottom:56px">
+    <p id="loading" class="muted">Loading your investment…</p>
+    <div id="errorBox" role="alert"></div>
+
+    <!-- Everything below stays hidden until the data arrives -->
+    <div id="content" style="display:none">
+
+      <!-- ===== GREETING ===== -->
+      <div style="margin-bottom:22px">
+        <h1 style="margin:0; font-size:28px; font-weight:800">Namaste, <span id="firstName"></span></h1>
+        <p class="muted" style="margin:4px 0 0; font-size:14px">Prices as of <span id="navDate"></span></p>
+      </div>
+
+      <!-- ===== FOUR NUMBERS ===== -->
+      <div class="kpis">
+        <div class="card"><p class="kpi-label">Money I put in</p><p class="kpi-value" id="moneyIn">–</p><p class="kpi-sub muted" id="txnCount"></p></div>
+        <div class="card" style="border-color:var(--ac); background:var(--acs)"><p class="kpi-label">My value today</p><p class="kpi-value" id="valueToday">–</p><p class="kpi-sub" style="color:var(--ac)" id="unitsLine"></p></div>
+        <div class="card"><p class="kpi-label">My profit / loss</p><p class="kpi-value" id="profit">–</p><p class="kpi-sub" id="profitPct"></p></div>
+        <div class="card"><p class="kpi-label">Price per unit (NAV)</p><p class="kpi-value" id="latestNav">–</p><p class="kpi-sub muted">Same for every member</p></div>
+      </div>
+
+      <!-- ===== CHART ===== -->
+      <section class="card" style="margin-bottom:20px">
+        <h2 style="margin:0 0 4px; font-size:18px">My value over time</h2>
+        <p class="muted" style="margin:0 0 14px; font-size:13px">Green = what my units are worth · Dashed = money I put in</p>
+        <div style="position:relative; height:280px"><canvas id="valueChart"></canvas></div>
+      </section>
+
+      <!-- ===== MY DEPOSITS AND WITHDRAWALS ===== -->
+      <section class="card">
+        <h2 style="margin:0 0 8px; font-size:18px">My deposits and withdrawals</h2>
+        <p id="noTxns" class="muted" style="display:none">No deposits yet. Once your first deposit is approved it will show here.</p>
+        <div style="overflow-x:auto">
+          <table id="txnTable">
+            <thead><tr><th>Date</th><th>Type</th><th>Amount</th><th>NAV that day</th><th>Units</th><th>Note</th></tr></thead>
+            <tbody id="txnRows"></tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+  </main>
+</div>
+
+<!-- ===== LIBRARIES ===== -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1"></script>
+<script src="config.js"></script>
+
+<script>
+  // ===== 1–2. Connection and money helpers come from config.js =====
+  function show(id, text) { document.getElementById(id).textContent = text; }
+  function fail(message) {
+    document.getElementById("loading").style.display = "none";
+    const box = document.getElementById("errorBox");
+    box.textContent = message;
+    box.style.display = "block";
+  }
+
+  // ===== 3. DARK / LIGHT BUTTON (from config.js; chart recolours too) =====
+  const page = document.getElementById("page");
+  let chart = null;
+  setupTheme(function () { if (chart) styleChart(); });
+
+  // ===== 4. LOG OUT =====
+  document.getElementById("logoutBtn").addEventListener("click", async function () {
+    await db.auth.signOut();
+    window.location.href = "login.html";
+  });
+
+  // ===== 5. LOAD EVERYTHING =====
+  async function loadDashboard() {
+    // a) Is someone logged in? If not, send them to the login page.
+    const { data: sessionData } = await db.auth.getSession();
+    if (!sessionData.session) { window.location.href = "login.html"; return; }
+    const user = sessionData.session.user;
+
+    // b) Their profile (name)
+    const { data: profile, error: pErr } = await db
+      .from("profiles").select("full_name, role").eq("id", user.id).single();
+    if (pErr || !profile) { fail("We couldn't find your profile. Please contact Nadi."); return; }
+    if (profile.role === "admin") document.getElementById("adminLink").style.display = "inline-flex";
+
+    // c) ONLY this person's transactions (.eq user_id is important for the admin account)
+    const { data: txns, error: tErr } = await db
+      .from("transactions")
+      .select("txn_date, type, amount, nav, units, note")
+      .eq("user_id", user.id)
+      .order("txn_date", { ascending: true });
+    if (tErr) { fail("Couldn't load your deposits: " + tErr.message); return; }
+
+    // d) NAV history (for the latest price and the chart)
+    const { data: navs, error: nErr } = await db
+      .from("nav_history").select("nav_date, nav").order("nav_date", { ascending: true });
+    if (nErr) { fail("Couldn't load NAV: " + nErr.message); return; }
+    if (!navs.length) { fail("No NAV has been entered yet. Please check back later."); return; }
+
+    // ===== 6. DO THE MATHS =====
+    const latest = navs[navs.length - 1];
+    let moneyIn = 0, units = 0;
+    txns.forEach(function (t) {
+      moneyIn += (t.type === "deposit" ? 1 : -1) * Number(t.amount);
+      units += Number(t.units);
+    });
+    const value = units * Number(latest.nav);
+    const profit = value - moneyIn;
+    const profitPct = moneyIn > 0 ? (profit / moneyIn) * 100 : 0;
+
+    // ===== 7. PUT NUMBERS ON THE PAGE =====
+    show("firstName", profile.full_name.split(" ")[0]);
+    show("navDate", latest.nav_date);
+    show("moneyIn", rs(moneyIn));
+    show("txnCount", txns.length + (txns.length === 1 ? " transaction" : " transactions"));
+    show("valueToday", rs(value));
+    show("unitsLine", num(units, 2) + " units × Rs " + num(latest.nav, 2));
+    show("latestNav", "Rs " + num(latest.nav, 2));
+
+    const profitEl = document.getElementById("profit");
+    profitEl.textContent = (profit >= 0 ? "+" : "−") + rs(Math.abs(profit));
+    profitEl.className = "kpi-value " + (profit >= 0 ? "up" : "dn");
+    const pctEl = document.getElementById("profitPct");
+    pctEl.textContent = (profit >= 0 ? "▲ " : "▼ ") + Math.abs(profitPct).toFixed(1) + "% · before tax";
+    pctEl.className = "kpi-sub " + (profit >= 0 ? "up" : "dn");
+
+    // Table of transactions (newest first)
+    const rows = document.getElementById("txnRows");
+    if (!txns.length) {
+      document.getElementById("noTxns").style.display = "block";
+      document.getElementById("txnTable").style.display = "none";
+    }
+    txns.slice().reverse().forEach(function (t) {
+      const tr = document.createElement("tr");
+      const cells = [
+        t.txn_date,
+        t.type === "deposit" ? "Deposit" : "Withdrawal",
+        rs(t.amount),
+        "Rs " + num(t.nav, 2),
+        num(t.units, 2),
+        t.note || ""
+      ];
+      cells.forEach(function (text, i) {
+        const td = document.createElement("td");
+        if (i === 1) {
+          const span = document.createElement("span");
+          span.className = "tag " + (t.type === "deposit" ? "dep" : "wd");
+          span.textContent = text;
+          td.appendChild(span);
+        } else {
+          td.textContent = text;
+        }
+        if (i === 5) td.className = "muted";
+        tr.appendChild(td);
+      });
+      rows.appendChild(tr);
+    });
+
+    // ===== 8. THE CHART =====
+    // For each NAV date: units held on that date × NAV = value; and money put in by that date
+    const firstDate = txns.length ? txns[0].txn_date : latest.nav_date;
+    const points = navs.filter(function (n) { return n.nav_date >= firstDate; });
+    const labels = [], valueLine = [], moneyLine = [];
+    points.forEach(function (n) {
+      let u = 0, m = 0;
+      txns.forEach(function (t) {
+        if (t.txn_date <= n.nav_date) {
+          u += Number(t.units);
+          m += (t.type === "deposit" ? 1 : -1) * Number(t.amount);
+        }
+      });
+      labels.push(n.nav_date);
+      valueLine.push(Math.round(u * Number(n.nav)));
+      moneyLine.push(Math.round(m));
+    });
+
+    chart = new Chart(document.getElementById("valueChart"), {
+      type: "line",
+      data: {
+        labels: labels,
+        datasets: [
+          { label: "My value", data: valueLine, fill: true, tension: 0.3, borderWidth: 3, pointRadius: 3 },
+          { label: "Money put in", data: moneyLine, borderDash: [6, 6], borderWidth: 2, pointRadius: 0, stepped: true }
+        ]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: {
+          legend: { labels: {} },
+          tooltip: { callbacks: { label: function (c) { return c.dataset.label + ": " + rs(c.parsed.y); } } }
+        },
+        scales: {
+          x: { ticks: {}, grid: {} },
+          y: { ticks: { callback: function (v) { return rs(v); } }, grid: {} }
+        }
+      }
+    });
+    styleChart();
+
+    document.getElementById("loading").style.display = "none";
+    document.getElementById("content").style.display = "block";
+  }
+
+  // Chart colours follow dark / light mode
+  function styleChart() {
+    const css = getComputedStyle(page);
+    const green = css.getPropertyValue("--ac").trim();
+    const muted = css.getPropertyValue("--mt").trim();
+    const grid = css.getPropertyValue("--bd").trim();
+    const isLight = page.classList.contains("light");
+    chart.data.datasets[0].borderColor = green;
+    chart.data.datasets[0].pointBackgroundColor = green;
+    chart.data.datasets[0].backgroundColor = isLight ? "rgba(23,138,62,0.12)" : "rgba(52,194,103,0.15)";
+    chart.data.datasets[1].borderColor = muted;
+    chart.data.datasets[1].backgroundColor = muted;
+    chart.options.plugins.legend.labels.color = muted;
+    chart.options.scales.x.ticks.color = muted;
+    chart.options.scales.y.ticks.color = muted;
+    chart.options.scales.x.grid.color = grid;
+    chart.options.scales.y.grid.color = grid;
+    chart.update();
+  }
+
+  loadDashboard().catch(function (e) { fail("Something went wrong: " + e.message); });
+</script>
+</body>
+</html>

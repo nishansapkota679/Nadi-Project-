@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Join Nadi Investment</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+
+<!-- ===== STYLES (same colours as the homepage) ===== -->
+<style>
+body{margin:0}
+.th{--bg:#0D0F10;--sf:#15181B;--sf2:#1C2024;--bd:#262B30;--tx:#F1F4F2;--mt:#A1AAA4;--ac:#34C267;--acs:rgba(52,194,103,.14);--act:#08140C;--dn:#FF6B6B;--in:#0F1113}
+.th.light{--bg:#F3F7F4;--sf:#FFFFFF;--sf2:#EDF5EF;--bd:#DFE7E1;--tx:#0F1712;--mt:#56625B;--ac:#178A3E;--acs:#E3F3E8;--act:#FFFFFF;--dn:#C62828;--in:#FFFFFF}
+.th{font-family:'Plus Jakarta Sans',system-ui,sans-serif;color:var(--tx);background:var(--bg);min-height:100vh}
+.th a{color:var(--ac)}
+.mt{color:var(--mt)}
+.card{background:var(--sf);border:1px solid var(--bd);border-radius:16px}
+.wrap{max-width:1100px;margin:0 auto;padding:0 20px}
+.ib{width:44px;height:44px;border-radius:12px;border:1px solid var(--bd);background:var(--sf);color:var(--tx);cursor:pointer;display:flex;align-items:center;justify-content:center}
+.ic-moon{display:none}.th.light .ic-moon{display:block}.th.light .ic-sun{display:none}
+.lb{display:flex;flex-direction:column;gap:6px;font-size:14px;font-weight:600}
+.in{font:inherit;font-weight:400;padding:12px 14px;border:1px solid var(--bd);border-radius:10px;background:var(--in);color:var(--tx)}
+.in:focus{outline:2px solid var(--ac);outline-offset:1px}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}
+.btn{font:inherit;font-weight:700;font-size:16px;padding:14px 22px;min-height:48px;border:none;border-radius:12px;background:var(--ac);color:var(--act);cursor:pointer}
+.step{width:36px;height:36px;border-radius:99px;background:var(--acs);color:var(--ac);font-weight:800;display:flex;align-items:center;justify-content:center;flex:none}
+.note{display:none;margin-top:16px;padding:14px 16px;border-radius:12px;background:var(--acs);color:var(--tx);line-height:1.5}
+.note.show{display:block}
+</style>
+</head>
+<body>
+<div id="page" class="th">
+
+<!-- ===== HEADER ===== -->
+<header style="border-bottom: 1px solid var(--bd); background: var(--sf)">
+<div class="wrap" style="display: flex; justify-content: space-between; align-items: center; gap: 12px; padding-top: 14px; padding-bottom: 14px">
+<a href="index.html" style="display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--tx)">
+<svg width="36" height="36" viewBox="0 0 36 36" aria-hidden="true"><rect width="36" height="36" rx="10" style="fill: var(--ac)"></rect><path d="M7 23c4-5 7 3 11-2s7 3 11-2" fill="none" stroke-width="2.6" stroke-linecap="round" style="stroke: var(--act)"></path><path d="M7 15c4-5 7 3 11-2s7 3 11-2" fill="none" stroke-width="2.6" stroke-linecap="round" opacity="0.55" style="stroke: var(--act)"></path></svg>
+<span style="font-weight: 800; font-size: 19px">Nadi <span style="color: var(--ac)">Investment</span></span>
+</a>
+<div style="display: flex; gap: 10px; align-items: center">
+<a href="index.html" style="font-weight: 600; font-size: 14px; text-decoration: none">← Back to home</a>
+<button type="button" id="themeBtn" class="ib" aria-label="Switch to light mode">
+<svg class="ic-sun" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.5" fill="none" stroke="currentColor" stroke-width="2"></circle><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path></svg>
+<svg class="ic-moon" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"></path></svg>
+</button>
+</div>
+</div>
+</header>
+
+<main class="wrap" style="padding-top: 40px; padding-bottom: 64px">
+<p style="margin: 0 0 8px; font-size: 13px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--ac)">Join Nadi</p>
+<h1 style="margin: 0 0 10px; font-size: 34px; font-weight: 800; line-height: 1.15">Start investing with <span style="color: var(--ac)">people who do the research</span></h1>
+<p class="mt" style="margin: 0 0 30px; font-size: 17px; line-height: 1.6; max-width: 640px">Fill in this short form. We'll call you, explain how the pool works and help you finish your KYC.</p>
+
+<div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start">
+
+<!-- ===== THE FORM ===== -->
+<!-- data-netlify="true" lets Netlify collect submissions for free once the site is online -->
+<form id="joinForm" class="card" name="join" method="POST" data-netlify="true" netlify-honeypot="bot-field" style="flex: 2 1 460px; min-width: 0; padding: 28px; display: flex; flex-direction: column; gap: 18px">
+<input type="hidden" name="form-name" value="join">
+<p style="display: none"><label>Leave this empty: <input name="bot-field"></label></p>
+
+<div class="grid2">
+<label class="lb">Full name<input class="in" type="text" name="name" required placeholder="Ram Bahadur Shrestha"></label>
+<label class="lb">Phone number<input class="in" type="tel" name="phone" required placeholder="98XXXXXXXX" pattern="[0-9]{10}" title="10-digit mobile number"></label>
+</div>
+<div class="grid2">
+<label class="lb">Email<input class="in" type="email" name="email" required placeholder="you@example.com"></label>
+<label class="lb">City<input class="in" type="text" name="city" placeholder="Lalitpur"></label>
+</div>
+<div class="grid2">
+<label class="lb">How much do you plan to invest?
+<select class="in" name="amount" required>
+<option value="">Choose one</option>
+<option>Rs [MINIMUM] – Rs 25,000</option>
+<option>Rs 25,000 – Rs 1,00,000</option>
+<option>Rs 1,00,000 – Rs 5,00,000</option>
+<option>More than Rs 5,00,000</option>
+</select></label>
+<label class="lb">How did you hear about us?
+<select class="in" name="source">
+<option>A friend</option>
+<option>Facebook / social media</option>
+<option>YouTube</option>
+<option>Other</option>
+</select></label>
+</div>
+<label class="lb">Anything you want to ask? (optional)<textarea class="in" name="message" rows="4" placeholder="Your question"></textarea></label>
+
+<label style="display: flex; gap: 10px; align-items: flex-start; font-size: 14px; line-height: 1.5; cursor: pointer">
+<input type="checkbox" name="risk" required style="width: 20px; height: 20px; margin-top: 1px; flex: none">
+<span>I understand that share prices can go down as well as up, and I could lose part of the money I invest.</span>
+</label>
+
+<button type="submit" class="btn">Send my details</button>
+<p class="mt" style="margin: 0; font-size: 13px">We never ask for your passwords or OTPs. Please don't send documents here — we'll collect KYC safely later.</p>
+<div id="localNote" class="note" role="status"></div>
+</form>
+
+<!-- ===== WHAT HAPPENS NEXT ===== -->
+<aside class="card" style="flex: 1 1 280px; min-width: 0; padding: 26px">
+<h2 style="margin: 0 0 18px; font-size: 18px; font-weight: 700">What happens next</h2>
+<ol style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 18px">
+<li style="display: flex; gap: 12px"><span class="step">1</span><span><strong style="display: block">We call you</strong><span class="mt" style="font-size: 14px">Within [X] days, to answer your questions.</span></span></li>
+<li style="display: flex; gap: 12px"><span class="step">2</span><span><strong style="display: block">Verify your identity</strong><span class="mt" style="font-size: 14px">Citizenship, PAN and a photo, collected securely.</span></span></li>
+<li style="display: flex; gap: 12px"><span class="step">3</span><span><strong style="display: block">Add money and get units</strong><span class="mt" style="font-size: 14px">Pay into the company account only. You get units at that day's price.</span></span></li>
+</ol>
+<div style="margin-top: 22px; padding-top: 18px; border-top: 1px solid var(--bd); font-size: 14px">
+<p class="mt" style="margin: 0 0 4px">Questions?</p>
+<p style="margin: 0; font-weight: 700">[PHONE] · [EMAIL]</p>
+</div>
+</aside>
+
+</div>
+</main>
+</div>
+
+<!-- ===== JAVASCRIPT: dark / light button (remembers choice from the homepage) ===== -->
+<script>
+  const page = document.getElementById("page");
+  const themeBtn = document.getElementById("themeBtn");
+
+  function applyTheme(mode) {
+    page.classList.toggle("light", mode === "light");
+    themeBtn.setAttribute("aria-label", mode === "light" ? "Switch to dark mode" : "Switch to light mode");
+  }
+  try { applyTheme(localStorage.getItem("nadiTheme") || "dark"); } catch (e) { applyTheme("dark"); }
+
+  themeBtn.addEventListener("click", function () {
+    const mode = page.classList.contains("light") ? "dark" : "light";
+    applyTheme(mode);
+    try { localStorage.setItem("nadiTheme", mode); } catch (e) {}
+  });
+</script>
+
+<!-- ===== JAVASCRIPT: form test on your computer ===== -->
+<!-- On Live Server the form can't really send, so we show a message instead. Online on Netlify it sends for real. -->
+<script>
+  const joinForm = document.getElementById("joinForm");
+  const localNote = document.getElementById("localNote");
+  const isLocal = location.hostname === "127.0.0.1" || location.hostname === "localhost" || location.protocol === "file:";
+
+  joinForm.addEventListener("submit", function (e) {
+    if (isLocal) {
+      e.preventDefault();
+      const name = joinForm.elements["name"].value;
+      localNote.textContent = "✓ Test worked, " + name + "! On your computer nothing is sent. Once the site is on Netlify, this form will send your details for real.";
+      localNote.classList.add("show");
+    }
+  });
+</script>
+</body>
+</html>

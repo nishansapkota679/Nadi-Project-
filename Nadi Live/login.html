@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Log in · Nadi Investment</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+  <style>
+    body { margin: 0; }
+    .th { --bg:#0D0F10; --sf:#15181B; --bd:#262B30; --tx:#F1F4F2; --mt:#A1AAA4; --ac:#34C267; --act:#08140C; --dn:#FF6B6B; --in:#0F1113; }
+    .th.light { --bg:#F3F7F4; --sf:#FFFFFF; --bd:#DFE7E1; --tx:#0F1712; --mt:#56625B; --ac:#178A3E; --act:#FFFFFF; --dn:#C62828; --in:#FFFFFF; }
+    .th { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); color: var(--tx);
+          min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; box-sizing: border-box; }
+    .box { background: var(--sf); border: 1px solid var(--bd); border-radius: 16px; padding: 32px; width: 100%; max-width: 400px; box-sizing: border-box; }
+    h1 { margin: 0 0 6px; font-size: 26px; }
+    .green { color: var(--ac); }
+    .muted { color: var(--mt); font-size: 14px; margin: 0 0 24px; }
+    label { display: block; font-size: 14px; font-weight: 600; margin-bottom: 16px; }
+    input { display: block; width: 100%; box-sizing: border-box; margin-top: 6px; padding: 12px 14px; font: inherit;
+            background: var(--in); color: var(--tx); border: 1px solid var(--bd); border-radius: 10px; }
+    button { width: 100%; padding: 14px; font: inherit; font-weight: 800; border: none; border-radius: 12px;
+             background: var(--ac); color: var(--act); cursor: pointer; }
+    button:disabled { opacity: 0.6; cursor: wait; }
+    .msg { margin-top: 16px; font-size: 14px; min-height: 20px; }
+    .error { color: var(--dn); }
+    a { color: var(--ac); }
+  </style>
+</head>
+<body>
+<div id="page" class="th">
+
+  <!-- ===== LOGIN FORM ===== -->
+  <div class="box">
+    <h1>Nadi <span class="green">Investment</span></h1>
+    <p class="muted">Log in to see your investment.</p>
+
+    <form id="loginForm">
+      <label>Email
+        <input type="email" id="email" required placeholder="you@example.com" autocomplete="email">
+      </label>
+      <label>Password
+        <input type="password" id="password" required placeholder="Your password" autocomplete="current-password">
+      </label>
+      <button type="submit" id="loginBtn">Log in</button>
+    </form>
+    <p class="msg" id="msg"></p>
+    <p class="muted" style="margin: 16px 0 0"><a href="index.html">← Back to home</a></p>
+  </div>
+</div>
+
+<!-- ===== LIBRARIES + YOUR SETTINGS ===== -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4"></script>
+<script src="config.js"></script>
+
+<script>
+  setupTheme();
+  const msg = document.getElementById("msg");
+  const loginBtn = document.getElementById("loginBtn");
+
+  // Send each person to the right page: admin → admin.html, everyone else → dashboard.html
+  async function goToHome(user) {
+    const { data: profile } = await db.from("profiles").select("role").eq("id", user.id).single();
+    window.location.href = (profile && profile.role === "admin") ? "admin.html" : "dashboard.html";
+  }
+
+  // Already logged in? Skip the form.
+  db.auth.getSession().then(function ({ data }) {
+    if (data.session) goToHome(data.session.user);
+  });
+
+  // Log in when the form is submitted
+  document.getElementById("loginForm").addEventListener("submit", async function (e) {
+    e.preventDefault();
+    msg.textContent = "Logging in…";
+    msg.className = "msg";
+    loginBtn.disabled = true;
+
+    const { data, error } = await db.auth.signInWithPassword({
+      email: document.getElementById("email").value.trim(),
+      password: document.getElementById("password").value
+    });
+
+    loginBtn.disabled = false;
+    if (error) {
+      msg.textContent = error.message === "Invalid login credentials"
+        ? "Wrong email or password. Please try again."
+        : "Error: " + error.message;
+      msg.className = "msg error";
+    } else {
+      goToHome(data.user);
+    }
+  });
+</script>
+</body>
+</html>

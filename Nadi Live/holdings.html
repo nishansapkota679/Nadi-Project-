@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pool holdings · Nadi Investment</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- ===== STYLES ===== -->
+  <style>
+    body { margin: 0; }
+    .th { --bg:#0D0F10; --sf:#15181B; --sf2:#1C2024; --bd:#262B30; --tx:#F1F4F2; --mt:#A1AAA4;
+          --ac:#34C267; --acs:rgba(52,194,103,.14); --act:#08140C; --up:#3DD68C; --dn:#FF6B6B; --wn:#F5B83D; --wns:rgba(245,184,61,.14);
+          --c1:#34C267; --c2:#9BE7B4; --c3:#1E6B3C; --c4:#56606A; }
+    .th.light { --bg:#F3F7F4; --sf:#FFFFFF; --sf2:#EDF5EF; --bd:#DFE7E1; --tx:#0F1712; --mt:#56625B;
+          --ac:#178A3E; --acs:#E3F3E8; --act:#FFFFFF; --up:#13804A; --dn:#C62828; --wn:#8A5A00; --wns:#FFF3D6;
+          --c1:#178A3E; --c2:#7CCB95; --c3:#0E4F25; --c4:#B8C2BC; }
+    .th { font-family:'Plus Jakarta Sans', system-ui, sans-serif; background:var(--bg); color:var(--tx); min-height:100vh; }
+    .th a { color:var(--ac); } .th a.btn { color:var(--tx); }
+    .wrap { max-width:1200px; margin:0 auto; padding:0 20px; }
+    .muted { color:var(--mt); }
+    .card { background:var(--sf); border:1px solid var(--bd); border-radius:16px; padding:22px; box-sizing:border-box; }
+    .grid4 { display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:16px; margin-bottom:20px; }
+    .kpi-label { margin:0; font-size:14px; font-weight:600; color:var(--mt); }
+    .kpi-value { margin:12px 0 4px; font-size:26px; font-weight:800; }
+    .btn { display:inline-flex; align-items:center; box-sizing:border-box; font:inherit; font-weight:700; font-size:14px; padding:11px 16px; min-height:44px;
+           border-radius:12px; cursor:pointer; border:1px solid var(--bd); background:var(--sf); color:var(--tx); text-decoration:none; }
+    .ib { width:44px; padding:0; justify-content:center; }
+    .ic-moon{display:none} .th.light .ic-moon{display:block} .th.light .ic-sun{display:none}
+    table { width:100%; border-collapse:collapse; min-width:860px; }
+    th { padding:10px; font-size:12px; color:var(--mt); font-weight:700; text-align:left; text-transform:uppercase; letter-spacing:.5px; white-space:nowrap; }
+    td { padding:13px 10px; border-top:1px solid var(--bd); font-size:14px; white-space:nowrap; }
+    td.wrapcell { white-space:normal; }
+    .up { color:var(--up); font-weight:700; } .dn { color:var(--dn); font-weight:700; }
+    .warn { background:var(--wns); color:var(--wn); padding:3px 9px; border-radius:99px; font-weight:700; font-size:12px; }
+    .bar { height:10px; background:var(--sf2); border-radius:99px; } .bar > div { height:10px; border-radius:99px; }
+  </style>
+</head>
+<body>
+<div id="page" class="th">
+
+  <!-- ===== TOP BAR ===== -->
+  <header style="background:var(--sf); border-bottom:1px solid var(--bd)">
+    <div class="wrap" style="display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:12px; padding-top:14px; padding-bottom:14px">
+      <a href="index.html" style="display:flex; align-items:center; gap:10px; text-decoration:none; color:var(--tx)">
+        <svg width="36" height="36" viewBox="0 0 36 36" aria-hidden="true"><rect width="36" height="36" rx="10" style="fill:var(--ac)"></rect><path d="M7 23c4-5 7 3 11-2s7 3 11-2" fill="none" stroke-width="2.6" stroke-linecap="round" style="stroke:var(--act)"></path><path d="M7 15c4-5 7 3 11-2s7 3 11-2" fill="none" stroke-width="2.6" stroke-linecap="round" opacity="0.55" style="stroke:var(--act)"></path></svg>
+        <span style="font-weight:800; font-size:19px">Nadi <span style="color:var(--ac)">Investment</span></span>
+      </a>
+      <div style="display:flex; flex-wrap:wrap; gap:10px; align-items:center">
+        <a href="dashboard.html" class="btn">My dashboard</a>
+        <button type="button" id="themeBtn" class="btn ib" aria-label="Switch to light mode">
+          <svg class="ic-sun" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.5" fill="none" stroke="currentColor" stroke-width="2"></circle><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path></svg>
+          <svg class="ic-moon" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"></path></svg>
+        </button>
+        <button type="button" id="logoutBtn" class="btn">Log out</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap" style="padding-top:26px; padding-bottom:56px">
+    <h1 style="margin:0 0 4px; font-size:28px; font-weight:800">Pool holdings</h1>
+    <p class="muted" style="margin:0 0 22px; font-size:14px">Everything the pool owns. Every member sees this same page. <span id="updated"></span></p>
+    <p id="loading" class="muted">Loading…</p>
+
+    <div id="content" style="display:none">
+      <!-- ===== SUMMARY ===== -->
+      <div class="grid4">
+        <div class="card"><p class="kpi-label">Shares value</p><p class="kpi-value" id="kValue">–</p><p class="muted" style="margin:0; font-size:13px">At today's prices</p></div>
+        <div class="card"><p class="kpi-label">Stocks held</p><p class="kpi-value" id="kCount">–</p><p class="muted" style="margin:0; font-size:13px" id="kSectors"></p></div>
+        <div class="card"><p class="kpi-label">Best performer</p><p class="kpi-value" id="kBest">–</p><p style="margin:0; font-size:13px" id="kBestSub"></p></div>
+        <div class="card"><p class="kpi-label">Worst performer</p><p class="kpi-value" id="kWorst">–</p><p style="margin:0; font-size:13px" id="kWorstSub"></p></div>
+      </div>
+
+      <!-- ===== SECTORS ===== -->
+      <section class="card" style="margin-bottom:20px">
+        <h2 style="margin:0 0 16px; font-size:18px">By sector</h2>
+        <div id="sectorBars" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(240px, 1fr)); gap:16px 28px"></div>
+      </section>
+
+      <!-- ===== TABLE ===== -->
+      <section class="card">
+        <h2 style="margin:0 0 8px; font-size:18px">Stocks held</h2>
+        <div style="overflow-x:auto">
+          <table>
+            <thead><tr><th>Stock</th><th>Sector</th><th>Units</th><th>Avg buy</th><th>Today</th><th>Value</th><th>Profit / loss</th><th>Weight</th><th>Stop-loss</th><th>Why we hold it</th></tr></thead>
+            <tbody id="rows"></tbody>
+          </table>
+        </div>
+        <p class="muted" style="margin:14px 0 0; font-size:13px">Our rule: no single stock above 25% of the pool. Stocks over the limit are marked.</p>
+      </section>
+    </div>
+  </main>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4"></script>
+<script src="config.js"></script>
+<script>
+  setupTheme();
+  const $ = function (id) { return document.getElementById(id); };
+  function cell(tr, text, cls) { const td = document.createElement("td"); td.textContent = text; if (cls) td.className = cls; tr.appendChild(td); return td; }
+  function pct(x) { return (x >= 0 ? "▲ " : "▼ ") + Math.abs(x * 100).toFixed(1) + "%"; }
+
+  $("logoutBtn").addEventListener("click", async function () { await db.auth.signOut(); window.location.href = "login.html"; });
+
+  async function load() {
+    const { data: s } = await db.auth.getSession();
+    if (!s.session) { window.location.href = "login.html"; return; }
+
+    const { data, error } = await db.from("holdings").select("symbol, sector, units, avg_price, ltp, stop_loss, reason, updated_at").order("symbol", { ascending: true });
+    if (error) { $("loading").textContent = "Error: " + error.message; return; }
+    const list = data.filter(function (x) { return Number(x.units) > 0; });
+    $("loading").style.display = "none"; $("content").style.display = "block";
+    if (!list.length) { $("rows").innerHTML = ""; const tr = document.createElement("tr"); cell(tr, "No stocks yet.", "muted"); $("rows").appendChild(tr); return; }
+
+    const total = list.reduce(function (a, x) { return a + x.units * x.ltp; }, 0);
+    const latest = list.map(function (x) { return x.updated_at; }).sort().pop();
+    if (latest) $("updated").textContent = "Prices updated " + latest.slice(0, 10) + ".";
+
+    // Summary cards
+    const sorted = list.slice().sort(function (a, b) { return (b.ltp / b.avg_price) - (a.ltp / a.avg_price); });
+    const best = sorted[0], worst = sorted[sorted.length - 1];
+    $("kValue").textContent = rs(total);
+    $("kCount").textContent = list.length;
+    const bg = best.ltp / best.avg_price - 1, wg = worst.ltp / worst.avg_price - 1;
+    $("kBest").textContent = best.symbol; $("kBestSub").textContent = pct(bg) + " since bought"; $("kBestSub").className = bg >= 0 ? "up" : "dn";
+    $("kWorst").textContent = worst.symbol; $("kWorstSub").textContent = pct(wg) + " since bought"; $("kWorstSub").className = wg >= 0 ? "up" : "dn";
+
+    // Sector bars
+    const sec = {};
+    list.forEach(function (x) { sec[x.sector] = (sec[x.sector] || 0) + x.units * x.ltp; });
+    const names = Object.keys(sec).sort(function (a, b) { return sec[b] - sec[a]; });
+    $("kSectors").textContent = names.length + (names.length === 1 ? " sector" : " sectors");
+    const colors = ["var(--c1)", "var(--c2)", "var(--c3)", "var(--c4)"];
+    $("sectorBars").innerHTML = "";
+    names.forEach(function (n, i) {
+      const share = sec[n] / total * 100;
+      const box = document.createElement("div");
+      const top = document.createElement("div"); top.setAttribute("style", "display:flex; justify-content:space-between; margin-bottom:6px; font-size:14px");
+      const a = document.createElement("span"); a.textContent = n; const b = document.createElement("strong"); b.textContent = share.toFixed(0) + "%";
+      top.appendChild(a); top.appendChild(b);
+      const bar = document.createElement("div"); bar.className = "bar";
+      const fill = document.createElement("div"); fill.style.width = share + "%"; fill.style.background = colors[i % colors.length];
+      bar.appendChild(fill); box.appendChild(top); box.appendChild(bar); $("sectorBars").appendChild(box);
+    });
+
+    // Table (largest first)
+    $("rows").innerHTML = "";
+    list.slice().sort(function (a, b) { return b.units * b.ltp - a.units * a.ltp; }).forEach(function (x) {
+      const value = x.units * x.ltp, g = x.ltp / x.avg_price - 1, w = value / total * 100;
+      const tr = document.createElement("tr");
+      const s = cell(tr, ""); const strong = document.createElement("strong"); strong.textContent = x.symbol; s.appendChild(strong);
+      cell(tr, x.sector, "muted"); cell(tr, num(x.units, 0)); cell(tr, "Rs " + num(x.avg_price, 2)); cell(tr, "Rs " + num(x.ltp, 2));
+      cell(tr, rs(value)); cell(tr, pct(g), g >= 0 ? "up" : "dn");
+      const wt = cell(tr, "");
+      if (w > 25) { const sp = document.createElement("span"); sp.className = "warn"; sp.textContent = w.toFixed(0) + "% · over limit"; wt.appendChild(sp); }
+      else wt.textContent = w.toFixed(0) + "%";
+      const sl = cell(tr, x.stop_loss ? "Rs " + num(x.stop_loss, 2) : "–");
+      if (x.stop_loss && Number(x.ltp) <= Number(x.stop_loss)) { sl.className = "dn"; sl.textContent += " · hit"; }
+      cell(tr, x.reason || "", "muted wrapcell");
+      $("rows").appendChild(tr);
+    });
+  }
+
+  load().catch(function (e) { $("loading").textContent = "Something went wrong: " + e.message; });
+</script>
+</body>
+</html>
